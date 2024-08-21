@@ -63,7 +63,7 @@ public class RolePermissionSteps {
         _role.IfTheAlertMessageAppeared();
 
         String actualTitle = _role.Title();
-        Assert.(actualTitle, expectedTitle);
+        Assert.assertEquals(actualTitle, expectedTitle);
         try{
            user.ClickOnCancelBtn();
         }

@@ -45,14 +45,14 @@ public class CreateUserPage {
     public By _getUsername = By.xpath("//table[@class='table table-bordered mb-4']/tbody/tr/td[1]");
 
 
-//    public String  GetUserName(){
-//        if(_utilities.IsElementIsPresent(_getUsername))
-//        {
-//           return _utilities.SelectRandomly(_getUsername);
-//        }else{
-//            return null;
-//        }
-//    }
+    public String  GetUserName(){
+        if(_utilities.IsElementIsPresent(_getUsername))
+        {
+          return _utilities.GetText(_getUsername);
+        }else{
+            return null;
+        }
+    }
     public void ClickOnCreateUsers()
     {
         _utilities.WaitUntilTheElementIsAvilable(_createUsers);

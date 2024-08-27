@@ -2,32 +2,91 @@ package SeleniumUtilities;
 
 import DriverClass.WebDriverExtensions;
 import DriverClass.Driversetup;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import static DriverClass.Driversetup.driver;
 
 public class Utilities {
 
     Driversetup _driver = new Driversetup();
     Random _random = new Random();
-    Actions _action = new Actions(_driver.driver);
-    JavascriptExecutor js = (JavascriptExecutor) _driver.driver;
+    Actions _action = new Actions(driver);
+    JavascriptExecutor js = (JavascriptExecutor) driver;
 
+    public static boolean isSuccessMessagePresent(WebDriver driver,By element) {
+        try {
+            // Use an XPath or other selector to locate the success message element
+            return driver.findElement(element).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    public boolean Alert() {
+        boolean alertPresent = false;
+        try {
+            long startTime = System.currentTimeMillis();
+            long endTime = startTime + 3000; // 3 seconds in milliseconds
+            // Continuously check for the alert within the 3-second window
+            while (System.currentTimeMillis() < endTime) {
+                if (isAlertMessagePresent(_driver.driver)) {
+                    CustomAssert.captureScreenshotAndLog(_driver.driver, "ALrady exist alert message is present","fail","Alert");
+                    alertPresent = true;
+                    break;
+                }
+                // Optional: small sleep to prevent continuous tight looping
+                Thread.sleep(100);
+            }
 
+            if (!alertPresent) {
+                System.out.println("No alert appeared within the specified time.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+        return alertPresent;
+    }
+    public List<String> GetDataFromList(By element) {
+        List<String> dataList = new ArrayList<>();
+        WaitUntilTheElementIsAvilable(element);
+        List<WebElement> list = _driver.driver.findElements(element);
+        for (WebElement elementt : list) {
+            dataList.add(elementt.getText());
+        }
+        return dataList;
+    }
+
+    // Method to check for the presence of the error message
+    public static boolean isAlertMessagePresent(WebDriver driver) {
+        try {
+            // Adjust this to use a WebDriverWait and ExpectedConditions to detect the presence of the specific error element
+            return driver.findElement(By.xpath("//div[contains(text(),'Role name is already exist')]")).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
     public void SelectDropdownRandomly(By element, String option)
     {
         Select _select = new Select(FindElement(element));
 
         if(option == null) {
             WaitUntilTheElementIsAvilable(element);
-            List<WebElement> listOfElement = _driver.driver.findElements(element);
-            int count = listOfElement.size();
+            //List<WebElement> listOfElement = _driver.driver.findElements(element);
+            int count =  _select.getOptions().size();
             int index = _random.nextInt(0, count);
             _select.selectByIndex(index);
         }else{

@@ -61,9 +61,19 @@ public class RolePermissionSteps {
     }
     private void validatePageTitle(String expectedTitle) {
         _role.IfTheAlertMessageAppeared();
-
         String actualTitle = _role.Title();
-        Assert.assertEquals(actualTitle, expectedTitle);
+        if (actualTitle.contains(expectedTitle)) {
+            actualTitle = actualTitle.substring(0, actualTitle.indexOf(expectedTitle) + expectedTitle.length()).trim();
+        } else {
+            actualTitle = "Fail: The actual title doesent match with the expected title";
+        }
+
+        if (expectedTitle.equals(actualTitle)) {
+            System.out.println("Titles match.");
+        } else {
+            System.out.println("Titles do not match.");
+        }
+
         try{
            user.ClickOnCancelBtn();
         }

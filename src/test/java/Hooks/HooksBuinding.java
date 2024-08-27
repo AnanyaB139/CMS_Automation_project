@@ -55,21 +55,31 @@ public class HooksBuinding {
         if (scenario.isFailed()) {
             System.out.println("Scenario failed");
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String featureTitle = extractTitle(scenario.getId().split(";")[0]);
+            String newFolderName = "Failed_Screenshort";
+            String ScreenshoetFolderPath = System.getProperty("user.dir") + File.separator + newFolderName;
+            File newFolder = new File(ScreenshoetFolderPath);
+            if (!newFolder.exists()) {
+                if (newFolder.mkdir()) {
+                    System.out.println("Folder created successfully: " + ScreenshoetFolderPath);
+                } else {
+                    System.out.println("Failed to create folder: " + ScreenshoetFolderPath);
+                    return;
+                }
+            }
             String scenarioTitle = extractTitle(scenario.getName());
             String methodTitle = currentTestMethod.get();
             if (methodTitle == null) {
                 methodTitle = "UnknownMethod";
             }
-            String folderPath = System.getProperty("user.dir") + File.separator + "Screenshots" + File.separator + featureTitle + File.separator + scenarioTitle;
+           // String folderPath = System.getProperty("user.dir") + File.separator + "Screenshots" + File.separator + featureTitle + File.separator + scenarioTitle;
 
-            File directory = new File(folderPath);
+            File directory = new File(ScreenshoetFolderPath);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            String screenshotFileName = folderPath + File.separator + "error_" + featureTitle + "_" + scenarioTitle + "_" + methodTitle + "_" + timestamp + ".png";
-            String sourceFileName = folderPath + File.separator + "error_" + featureTitle + "_" + scenarioTitle + "_" + methodTitle + "_" + timestamp + ".html";
+            String screenshotFileName = ScreenshoetFolderPath + File.separator + "error_" + scenarioTitle + "_" + methodTitle + "_" + timestamp + ".png";
+            String sourceFileName = ScreenshoetFolderPath + File.separator + "error_" + scenarioTitle + "_" + methodTitle + "_" + timestamp + ".html";
 
             try {
                 takeScreenshot(screenshotFileName);
